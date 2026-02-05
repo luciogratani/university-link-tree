@@ -10,8 +10,8 @@ const _geist = Geist({ subsets: ['latin'] })
 const _geistMono = Geist_Mono({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'HUMIKUBAITALY | Profile',
-  description: 'Contatti e informazioni - dom-giov 15-02 | ven-sab 15-04',
+  title: 'UNIVERSITY | Sassari',
+  description: 'Contatti e informazioni',
 }
 
 export const viewport = {
