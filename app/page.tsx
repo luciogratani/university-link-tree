@@ -20,17 +20,17 @@ const LINKS = [
     name: "Instagram",
     url: "https://www.instagram.com/universitypoolbar/",
     icon: Instagram,
-  },
-  {
-    name: "Facebook",
-    url: "https://facebook.com/marcorossi",
-    icon: Facebook,
-  },
-  {
-    name: "Menù",
-    url: "https://darc.net/marcorossi",
-    icon: Menu,
-  },
+  }
+  //,{
+  //  name: "Facebook",
+  //  url: "https://facebook.com/marcorossi",
+  //  icon: Facebook,
+  //},
+  //{
+  //  name: "Menù",
+  //  url: "https://darc.net/marcorossi",
+  //  icon: Menu,
+  //},
 ]
 
 const LOCATION = {
