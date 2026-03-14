@@ -9,9 +9,29 @@ import './globals.css'
 const _geist = Geist({ subsets: ['latin'] })
 const _geistMono = Geist_Mono({ subsets: ['latin'] })
 
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://universitypoolbar.it'
+
 export const metadata: Metadata = {
-  title: 'UNIVERSITY | Sassari',
-  description: 'Contatti e informazioni',
+  metadataBase: new URL(siteUrl),
+  title: 'University Restaurant · Pool · Bar | Sassari',
+  description:
+    'Menù, orari, mappa e contatti dello University Restaurant Pool Bar a Sassari. Pizza e fainè, primi e secondi .',
+  openGraph: {
+    title: 'University Restaurant · Pool · Bar | Sassari',
+    description:
+      'Menù, orari, mappa e contatti dello University Restaurant Pool Bar a Sassari. Pizza e fainè, primi e secondi .',
+    url: siteUrl,
+    siteName: 'University Restaurant · Pool · Bar',
+    locale: 'it_IT',
+    type: 'website',
+    images: [{ url: '/placeholder-logo.svg', width: 400, height: 120, alt: 'University Restaurant Pool Bar' }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'University Restaurant · Pool · Bar | Sassari',
+    description:
+      'Menù, orari, mappa e contatti dello University Restaurant Pool Bar a Sassari.',
+  },
 }
 
 export const viewport = {

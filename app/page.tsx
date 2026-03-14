@@ -1,37 +1,43 @@
 "use client"
 
+/**
+ * Pagina principale: link-tree del locale University Restaurant · Pool · Bar (Sassari).
+ * Tab: Menù (ricerca + accordion), Maps, Contatti. CTAs flottanti (chiamata/WhatsApp) nel tab Menù dopo scroll.
+ */
+
 import React from "react"
 
-import { useEffect, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { useTheme } from "next-themes"
-import { Instagram, Facebook, Menu, Phone, MessageCircle, MapPin, Sun, Moon, ExternalLink, Clock } from "lucide-react"
+import {
+  Instagram,
+  Phone,
+  MessageCircle,
+  MapPin,
+  Sun,
+  Moon,
+  ExternalLink,
+  Clock,
+  Search,
+  Tag,
+  ChevronRight,
+  X,
+  Snowflake,
+} from "lucide-react"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Button } from "@/components/ui/button"
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
+import { Input } from "@/components/ui/input"
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
+import { MENU_FOOTER_TEXT, MENU_NOTICES, MENU_SECTIONS, type MenuSectionNotice } from "@/lib/menu-data"
 
 // ============================================
-// PROFILE DATA - Edit your information here
+// DATI PROFILO – Modifica qui orari, indirizzo e contatti
 // ============================================
+
 const PROFILE = {
   hours: "dom - giov 15-02 | ven - sab 15-04",
 }
-
-const LINKS = [
-  {
-    name: "Instagram",
-    url: "https://www.instagram.com/universitypoolbar/",
-    icon: Instagram,
-  }
-  //,{
-  //  name: "Facebook",
-  //  url: "https://facebook.com/marcorossi",
-  //  icon: Facebook,
-  //},
-  //{
-  //  name: "Menù",
-  //  url: "https://darc.net/marcorossi",
-  //  icon: Menu,
-  //},
-]
 
 const LOCATION = {
   address: "Via Duca degli Abruzzi 23/B, 07100 Sassari, Italia",
@@ -45,9 +51,10 @@ const CONTACTS = {
 }
 
 // ============================================
-// COMPONENTS
+// COMPONENTI
 // ============================================
 
+/** Logo SVG del locale (University Restaurant · Pool · Bar). */
 function BusinessLogo() {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 801 119" className="h-auto w-full max-w-[300px]">
@@ -60,6 +67,7 @@ function BusinessLogo() {
   )
 }
 
+/** Toggle tema chiaro/scuro. Evita mismatch SSR mostrando sempre sole fino al mount. */
 function ThemeToggle() {
   const { theme, setTheme } = useTheme()
   const [mounted, setMounted] = useState(false)
@@ -68,6 +76,7 @@ function ThemeToggle() {
     setMounted(true)
   }, [])
 
+  // Evita idratazione diversa tra server e client
   if (!mounted) {
     return (
       <Button variant="ghost" size="icon" className="h-9 w-9" aria-label="Toggle theme">
@@ -89,6 +98,7 @@ function ThemeToggle() {
   )
 }
 
+/** Animazione fade-in con ritardo (ms). Usato per header, tab e contenuti. */
 function FadeIn({ children, delay = 0, className = "" }: { children: React.ReactNode; delay?: number; className?: string }) {
   const [isVisible, setIsVisible] = useState(false)
 
@@ -108,18 +118,19 @@ function FadeIn({ children, delay = 0, className = "" }: { children: React.React
   )
 }
 
+/** Intestazione: logo, orari e toggle tema. */
 function ProfileHeader() {
   return (
     <div className="flex flex-col items-center gap-4 pb-6">
-      <div className="absolute right-4 top-4">
+      <div className="absolute right-2 top-2">
         <ThemeToggle />
       </div>
-      <FadeIn delay={100} className="px-4 py-3">
+      <FadeIn delay={100} className="px-4 pt-3 pb-1">
         <BusinessLogo />
       </FadeIn>
       <FadeIn delay={200} className="text-center">
         <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
-          <Clock className="h-4 w-4" />
+          <Clock className="h-4 w-4 shrink-0" />
           <span>{PROFILE.hours}</span>
         </div>
       </FadeIn>
@@ -127,34 +138,238 @@ function ProfileHeader() {
   )
 }
 
-function LinkCard({ name, url, icon: Icon, index }: { name: string; url: string; icon: typeof Instagram; index: number }) {
+/**
+ * Drawer per legenda allergeni/surgelati.
+ * TODO(dev): collegare in futuro gli allergeni al singolo piatto (es. allergenCodes su MenuItem).
+ */
+function AllergensLegendSheetTrigger({ children }: { children: React.ReactNode }) {
   return (
-    <FadeIn delay={400 + index * 100}>
-      <a
-        href={url}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="flex items-center gap-4 rounded-xl border border-border bg-card p-4 shadow-sm transition-all duration-200 hover:scale-[1.02] hover:shadow-md active:scale-[0.98]"
-      >
-        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-muted">
-          <Icon className="h-5 w-5 text-foreground" />
+    <Sheet>
+      <SheetTrigger asChild>
+        {children}
+      </SheetTrigger>
+      <SheetContent side="bottom" className="max-h-[85vh] overflow-y-auto rounded-t-2xl pb-safe">
+        <SheetHeader className="text-left">
+          <SheetTitle>Legenda allergeni e surgelati</SheetTitle>
+        </SheetHeader>
+        <div className="mt-4 grid gap-4 pb-8">
+          <div className="rounded-lg border border-border bg-muted/40 p-3">
+            <p className="flex items-center gap-2 font-medium text-foreground">
+              <Snowflake className="h-4 w-4 text-sky-500" />
+              Prodotto surgelato
+            </p>
+            <p className="mt-1 text-sm text-muted-foreground">
+              I piatti con icona ghiaccio sono preparati con materia prima surgelata.
+            </p>
+          </div>
+
+          <div className="rounded-lg border border-border bg-muted/40 p-3">
+            <p className="font-medium text-foreground">Allergeni (UE 1169/2011)</p>
+            <p className="mt-1 text-sm text-muted-foreground">
+              1 Cereali con glutine · 2 Crostacei · 3 Uova · 4 Pesce · 5 Arachidi · 6 Soia · 7 Latte · 8 Frutta a
+              guscio · 9 Sedano · 10 Senape · 11 Sesamo · 12 Solfiti · 13 Lupini · 14 Molluschi
+            </p>
+            <p className="mt-2 text-xs text-muted-foreground">
+              In caso di allergie o intolleranze chiedere sempre informazioni al personale.
+            </p>
+          </div>
         </div>
-        <span className="font-medium text-foreground">{name}</span>
-      </a>
-    </FadeIn>
+      </SheetContent>
+    </Sheet>
   )
 }
 
-function LinksTab() {
+/** Una sezione del menù in accordion: titolo, eventuale avviso (es. personalizzazione panino), lista piatti con prezzo. */
+function MenuSection({
+  id,
+  title,
+  items,
+  notice,
+}: {
+  id: string
+  title: string
+  items: { name: string; description?: string; price: string; frozen?: boolean }[]
+  notice?: MenuSectionNotice
+}) {
+  return (
+    <AccordionItem value={id} id={`menu-${id}`} className="scroll-mt-28">
+      <AccordionTrigger className="py-3 hover:no-underline">
+        <span className="text-left text-lg font-semibold text-foreground">{title}</span>
+      </AccordionTrigger>
+      <AccordionContent>
+        {notice && (
+          <div className="mb-3 rounded-lg border border-border bg-muted/40 p-3 ">
+            <p className="text-sm font-semibold text-foreground">{notice.title}</p>
+            <div className="mt-1 space-y-1">
+              {notice.lines.map((line, index) => (
+                <p key={`${notice.title}-${index}`} className="text-xs leading-5 text-muted-foreground">
+                  {line}
+                </p>
+              ))}
+            </div>
+          </div>
+        )}
+        <div className="space-y-3 pb-1">
+          {items.map((item, itemIndex) => (
+            // Versione semplice: se c'e' "*" nel nome o frozen=true, mostriamo icona ghiaccio.
+            // TODO(dev): quando la migrazione dati e' completa, rimuovere il fallback con "*".
+            <div
+              key={`${item.name}-${itemIndex}`}
+              className="flex items-start justify-between gap-4 border-b border-border pb-2 last:border-b-0 last:pb-0"
+            >
+              <div className="flex-1">
+                <p className="flex items-center gap-1.5 font-medium text-foreground">
+                  <span>{item.name}</span>
+                  {(item.frozen ?? item.name.includes("*")) && (
+                    <AllergensLegendSheetTrigger>
+                      <button
+                        type="button"
+                        className="inline-flex items-center"
+                        aria-label="Apri legenda allergeni e surgelati"
+                      >
+                        <Snowflake className="h-3 w-3 text-gray-500 -mt-0.5" aria-hidden="true" />
+                      </button>
+                    </AllergensLegendSheetTrigger>
+                  )}
+                </p>
+                {item.description && <p className="mt-1 text-sm leading-6 text-muted-foreground">{item.description}</p>}
+              </div>
+              <span className="whitespace-nowrap text-sm font-semibold text-foreground">{item.price}</span>
+            </div>
+          ))}
+        </div>
+      </AccordionContent>
+    </AccordionItem>
+  )
+}
+
+/**
+ * Tab Menù: campo di ricerca, accordion sezioni (una aperta alla volta),
+ * riga "Promo e convenzioni" (Sheet) solo quando la ricerca è vuota e ci sono avvisi.
+ */
+function MenuTab() {
+  const [searchQuery, setSearchQuery] = useState("")
+  const [expandedSection, setExpandedSection] = useState("")
+
+  const normalizedQuery = searchQuery.trim().toLowerCase()
+
+  // Filtra sezioni e voci per testo; se match sul titolo/avviso restituisce la sezione intera
+  const filteredSections = useMemo(() => {
+    if (!normalizedQuery) {
+      return MENU_SECTIONS
+    }
+
+    return MENU_SECTIONS
+      .map((section) => {
+        const noticeText = section.notice ? `${section.notice.title} ${section.notice.lines.join(" ")}` : ""
+        const sectionMatch = `${section.title} ${noticeText}`.toLowerCase().includes(normalizedQuery)
+        if (sectionMatch) {
+          return section
+        }
+
+        const items = section.items.filter((item) =>
+          `${item.name} ${item.description ?? ""}`.toLowerCase().includes(normalizedQuery),
+        )
+
+        if (items.length === 0) {
+          return null
+        }
+
+        return { ...section, items }
+      })
+      .filter((section): section is (typeof MENU_SECTIONS)[number] => Boolean(section))
+  }, [normalizedQuery])
+
+  // In ricerca: apri la prima sezione filtrata
+  useEffect(() => {
+    if (normalizedQuery) {
+      setExpandedSection(filteredSections[0]?.id ?? "")
+    }
+  }, [normalizedQuery, filteredSections])
+
   return (
     <div className="flex flex-col gap-3">
-      {LINKS.map((link, index) => (
-        <LinkCard key={link.name} {...link} index={index} />
-      ))}
+      <div className="relative">
+        <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+        <Input
+          value={searchQuery}
+          onChange={(event) => setSearchQuery(event.target.value)}
+          placeholder="Cerca nel menù..."
+          className="pl-9 pr-9"
+          aria-label="Cerca nel menù"
+        />
+        {/* Pulsante cancella ricerca (solo se c’è testo) */}
+        {searchQuery.length > 0 && (
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon"
+            className="absolute right-1 top-1/2 h-7 w-7 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+            onClick={() => setSearchQuery("")}
+            aria-label="Cancella ricerca"
+          >
+            <X className="h-4 w-4" />
+          </Button>
+        )}
+      </div>
+
+      {filteredSections.length === 0 ? (
+        <div className="rounded-xl border border-border bg-card p-4 text-center text-sm text-muted-foreground">
+          Nessun risultato per &quot;{searchQuery}&quot;.
+        </div>
+      ) : (
+        <Accordion
+          type="single"
+          collapsible
+          value={expandedSection}
+          onValueChange={(value) => {
+            setExpandedSection(value)
+          }}
+          className="rounded-xl border border-border bg-card px-4 shadow-sm"
+        >
+          {/* Promo e convenzioni: visibile solo senza ricerca e se ci sono avvisi */}
+          {!normalizedQuery && MENU_NOTICES.length > 0 && (
+            <div className="flex border-b border-border">
+              <Sheet>
+                <SheetTrigger asChild>
+                  <button
+                    type="button"
+                    className="flex flex-1 items-center justify-between py-4 text-left text-lg font-semibold text-foreground transition-colors hover:opacity-80 [&_svg]:shrink-0"
+                    aria-label="Apri promo e convenzioni"
+                  >
+                    <span className="flex items-center gap-2">
+                      <Tag className="h-4 w-4" />
+                      Promo e convenzioni
+                    </span>
+                    <ChevronRight className="h-4 w-4" />
+                  </button>
+                </SheetTrigger>
+                <SheetContent side="bottom" className="max-h-[85vh] overflow-y-auto rounded-t-2xl pb-safe">
+                  <SheetHeader className="text-left">
+                    <SheetTitle>Promo e convenzioni</SheetTitle>
+                  </SheetHeader>
+                  <div className="mt-4 grid gap-3 pb-8">
+                    {MENU_NOTICES.map((notice) => (
+                      <div key={notice.title} className="rounded-lg border border-border bg-muted/40 p-3">
+                        <p className="font-medium text-foreground">{notice.title}</p>
+                        <p className="mt-1 text-sm text-muted-foreground">{notice.description}</p>
+                      </div>
+                    ))}
+                  </div>
+                </SheetContent>
+              </Sheet>
+            </div>
+          )}
+          {filteredSections.map((section) => (
+            <MenuSection key={section.id} id={section.id} title={section.title} items={section.items} notice={section.notice} />
+          ))}
+        </Accordion>
+      )}
     </div>
   )
 }
 
+/** Tab Mappe: iframe Google Maps, indirizzo e link “Apri in Maps”. */
 function MapsTab() {
   const encodedAddress = encodeURIComponent(LOCATION.address)
   const mapUrl = `https://www.google.com/maps?q=${encodedAddress}&output=embed&z=16`
@@ -198,51 +413,58 @@ function MapsTab() {
   )
 }
 
+/** Pulsante contatto (chiamata, WhatsApp, Instagram) con stile per variante e FadeIn. */
 function ContactButton({
   href,
   icon: Icon,
   label,
   sublabel,
   variant = "default",
+  external = false,
   delay = 0,
 }: {
   href: string
   icon: typeof Phone
   label: string
   sublabel: string
-  variant?: "default" | "whatsapp"
+  variant?: "default" | "whatsapp" | "instagram"
+  external?: boolean
   delay?: number
 }) {
+  const isBrandVariant = variant === "whatsapp" || variant === "instagram"
+  const bgClass =
+    variant === "whatsapp"
+      ? "bg-[#25D366] text-white hover:bg-[#20ba57]"
+      : variant === "instagram"
+        ? "bg-[#E1306C] text-white hover:bg-[#c42d5d]"
+        : "bg-primary text-primary-foreground"
+  const iconBgClass = isBrandVariant ? "bg-white/20" : "bg-primary-foreground/20"
+  const sublabelClass = isBrandVariant ? "text-white/80" : "text-primary-foreground/80"
+
   return (
     <FadeIn delay={delay}>
       <a
         href={href}
-        className={`flex items-center gap-4 rounded-xl p-4 shadow-sm transition-all duration-200 hover:scale-[1.02] hover:shadow-md active:scale-[0.98] ${
-          variant === "whatsapp"
-            ? "bg-[#25D366] text-white"
-            : "bg-primary text-primary-foreground"
-        }`}
+        target={external ? "_blank" : undefined}
+        rel={external ? "noopener noreferrer" : undefined}
+        className={`flex items-center gap-4 rounded-xl p-4 shadow-sm transition-all duration-200 hover:scale-[1.02] hover:shadow-md active:scale-[0.98] ${bgClass}`}
       >
-        <div
-          className={`flex h-12 w-12 items-center justify-center rounded-full ${
-            variant === "whatsapp" ? "bg-white/20" : "bg-primary-foreground/20"
-          }`}
-        >
+        <div className={`flex h-12 w-12 items-center justify-center rounded-full ${iconBgClass}`}>
           <Icon className="h-6 w-6" />
         </div>
         <div className="flex flex-col">
           <span className="font-semibold">{label}</span>
-          <span className={`text-sm ${variant === "whatsapp" ? "text-white/80" : "text-primary-foreground/80"}`}>
-            {sublabel}
-          </span>
+          <span className={`text-sm ${sublabelClass}`}>{sublabel}</span>
         </div>
       </a>
     </FadeIn>
   )
 }
 
+/** Tab Contatti: Chiama, WhatsApp, Instagram con ContactButton. */
 function ContactsTab() {
   const whatsappUrl = `https://wa.me/${CONTACTS.whatsapp.replace(/\s/g, "").replace("+", "")}`
+  const instagramUrl = "https://www.instagram.com/universitypoolbar/"
 
   return (
     <div className="flex flex-col gap-3">
@@ -262,30 +484,63 @@ function ContactsTab() {
         variant="whatsapp"
         delay={500}
       />
+      <ContactButton
+        href={instagramUrl}
+        icon={Instagram}
+        label="Instagram"
+        sublabel="@universitypoolbar"
+        variant="instagram"
+        external
+        delay={600}
+      />
     </div>
   )
 }
 
 // ============================================
-// MAIN PAGE
+// PAGINA PRINCIPALE
 // ============================================
 
 export default function ProfilePage() {
+  const [activeTab, setActiveTab] = useState("menu")
+  const [showFloatingCtas, setShowFloatingCtas] = useState(false)
+  const phoneHref = `tel:${CONTACTS.phone.replace(/\s/g, "")}`
+  const whatsappHref = `https://wa.me/${CONTACTS.whatsapp.replace(/\s/g, "").replace("+", "")}`
+
+  // CTAs flottanti (chiamata/WhatsApp) solo nel tab Menù e dopo ~200px di scroll
+  useEffect(() => {
+    if (activeTab !== "menu") {
+      setShowFloatingCtas(false)
+      return
+    }
+
+    const onScroll = () => {
+      setShowFloatingCtas(window.scrollY > 200)
+    }
+
+    onScroll()
+    window.addEventListener("scroll", onScroll, { passive: true })
+    return () => window.removeEventListener("scroll", onScroll)
+  }, [activeTab])
+
   return (
     <main className="relative min-h-screen bg-muted/30">
       <div className="mx-auto max-w-md px-4 py-8">
         <ProfileHeader />
 
         <FadeIn delay={300}>
-          <Tabs defaultValue="link" className="w-full">
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
             <TabsList className="grid w-full grid-cols-3">
-              <TabsTrigger value="link">Link</TabsTrigger>
+              <TabsTrigger value="menu">Menù</TabsTrigger>
               <TabsTrigger value="maps">Maps</TabsTrigger>
               <TabsTrigger value="contatti">Contatti</TabsTrigger>
             </TabsList>
 
-            <TabsContent value="link" className="mt-4">
-              <LinksTab />
+            <TabsContent value="menu" className="mt-4">
+              <div className="space-y-3">
+                <MenuTab />
+                <p className="pt-2 text-center text-xs text-muted-foreground">{MENU_FOOTER_TEXT}</p>
+              </div>
             </TabsContent>
 
             <TabsContent value="maps" className="mt-4">
@@ -298,6 +553,27 @@ export default function ProfilePage() {
           </Tabs>
         </FadeIn>
       </div>
+
+      {/* Pulsanti fissi chiamata e WhatsApp, visibili solo in Menù dopo scroll */}
+      {activeTab === "menu" && showFloatingCtas && (
+        <div className="fixed bottom-4 right-4 z-50 flex flex-col gap-2">
+          <Button asChild size="icon" className="h-12 w-12 rounded-full shadow-lg" aria-label="Chiama il locale">
+            <a href={phoneHref}>
+              <Phone className="h-5 w-5" />
+            </a>
+          </Button>
+          <Button
+            asChild
+            size="icon"
+            className="h-12 w-12 rounded-full bg-[#25D366] text-white shadow-lg hover:bg-[#20ba57]"
+            aria-label="Apri WhatsApp"
+          >
+            <a href={whatsappHref} target="_blank" rel="noopener noreferrer">
+              <MessageCircle className="h-5 w-5" />
+            </a>
+          </Button>
+        </div>
+      )}
     </main>
   )
 }
