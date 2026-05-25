@@ -1,7 +1,8 @@
 "use client"
 
 import React, { useState, useMemo, useRef, useEffect } from "react"
-import { Calendar, Phone, MessageCircle, X } from "lucide-react"
+import Link from "next/link"
+import { Calendar, Home, Phone, MessageCircle, X } from "lucide-react"
 import { CALENDAR_EVENTS, type SportCategoryId } from "@/lib/calendar-data"
 
 // ─── Sport config ────────────────────────────────────────────────────────────
@@ -366,12 +367,9 @@ export default function CalendarioPage() {
           <h1 style={{ fontFamily: FA, fontWeight: 900, fontSize: 44, lineHeight: 0.92, letterSpacing: "-0.035em", color: "#fff", margin: 0, flex: 1 }}>
             CALEN<br />DARIO
           </h1>
-          <div
-            style={{ width: 38, height: 38, border: "1.5px solid #2a2a2a", borderRadius: 8, background: "#111", display: "grid", placeItems: "center", flexShrink: 0 }}
-            aria-hidden
-          >
-            <Calendar size={18} color="#fff" strokeWidth={1.8} />
-          </div>
+          <Link href="/" aria-label="Torna alla home" style={{ display: "grid", placeItems: "center", width: 38, height: 38, border: "1.5px solid #2a2a2a", borderRadius: 8, background: "#111", flexShrink: 0, textDecoration: "none" }}>
+            <Home size={18} color="#fff" strokeWidth={1.8} />
+          </Link>
         </div>
 
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: 14, fontFamily: FM, fontSize: 10, letterSpacing: "0.12em", textTransform: "uppercase", color: "#666" }}>

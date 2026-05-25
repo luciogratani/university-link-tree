@@ -23,7 +23,9 @@ import {
   ChevronRight,
   X,
   Snowflake,
+  Calendar,
 } from "lucide-react"
+import Link from "next/link"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Button } from "@/components/ui/button"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
@@ -124,6 +126,13 @@ function ProfileHeader() {
     <div className="flex flex-col items-center gap-4 pb-6">
       <div className="absolute right-2 top-2">
         <ThemeToggle />
+      </div>
+      <div className="absolute left-2 top-2">
+        <Button variant="ghost" size="icon" className="h-9 w-9" asChild>
+          <Link href="/calendario" aria-label="Vai al calendario sport">
+            <Calendar className="h-4 w-4" />
+          </Link>
+        </Button>
       </div>
       <FadeIn delay={100} className="px-4 pt-3 pb-1">
         <BusinessLogo />
