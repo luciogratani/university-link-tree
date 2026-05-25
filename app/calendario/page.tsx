@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useState, useMemo, useRef, useEffect } from "react"
-import { Calendar } from "lucide-react"
+import { Calendar, Phone, MessageCircle, X } from "lucide-react"
 import { CALENDAR_EVENTS, type SportCategoryId } from "@/lib/calendar-data"
 
 // ─── Sport config ────────────────────────────────────────────────────────────
@@ -30,7 +30,8 @@ const FM = "var(--font-mono-cal, 'JetBrains Mono', monospace)"
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
 function getTodayStr() {
-  return new Date().toISOString().slice(0, 10)
+  const now = new Date()
+  return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`
 }
 
 function isoWeek(date: Date): number {
@@ -136,10 +137,35 @@ function EventRow({
         <p style={{ fontFamily: FM, fontWeight: 700, fontSize: 18, color: "#fff", letterSpacing: "0.01em", lineHeight: 1, fontFeatureSettings: "'tnum' 1", margin: 0 }}>
           {event.time}{live && <span style={{ color: "#00e0c2", marginLeft: 4 }}>·</span>}
         </p>
-        <p style={{ fontFamily: FM, fontSize: 8.5, letterSpacing: "0.18em", color: live ? "#00e0c2" : "#555", margin: "4px 0 0", textTransform: "uppercase" }}>
-          {live ? "IN ONDA" : "CET"}
-        </p>
+        {live && (
+          <p style={{ fontFamily: FM, fontSize: 8.5, letterSpacing: "0.18em", color: "#00e0c2", margin: "4px 0 0", textTransform: "uppercase" }}>
+            IN ONDA
+          </p>
+        )}
       </div>
+    </div>
+  )
+}
+
+// ─── CompactEventRow (solo per ieri) ─────────────────────────────────────────
+
+function CompactEventRow({ event, isFirst }: { event: Ev; isFirst: boolean }) {
+  const sp = SPORTS[event.category]
+  return (
+    <div style={{
+      display: "flex",
+      alignItems: "center",
+      gap: 10,
+      padding: "5px 0",
+      borderTop: isFirst ? undefined : "1px solid #181818",
+    }}>
+      <span style={{ fontFamily: FM, fontWeight: 500, fontSize: 11, color: "#555", flexShrink: 0, letterSpacing: "0.04em" }}>
+        {event.time}
+      </span>
+      <span style={{ width: 4, height: 4, borderRadius: "50%", background: sp.color, flexShrink: 0, opacity: 0.6 }} />
+      <span style={{ fontFamily: FA, fontWeight: 600, fontSize: 12, color: "#555", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", flex: 1 }}>
+        {event.title}
+      </span>
     </div>
   )
 }
@@ -152,15 +178,34 @@ function DayGroup({
   filter,
   today,
   scrollRef,
+  compact,
 }: {
   date: string
   events: Ev[]
   filter: FilterId
   today: string
   scrollRef?: React.RefObject<HTMLDivElement | null>
+  compact?: boolean
 }) {
   const isToday = date === today
   const isPast = date < today
+
+  // Ieri: rendering minimale, senza card né filtro sport
+  if (compact) {
+    return (
+      <div style={{ padding: "8px 20px 14px", opacity: 0.4 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
+          <span style={{ fontFamily: FM, fontWeight: 600, fontSize: 10, letterSpacing: "0.22em", color: "#444" }}>
+            {dayCode(date)}
+          </span>
+          <div style={{ flex: 1, height: 1, background: "linear-gradient(to right, #1e1e1e, transparent)" }} />
+        </div>
+        {events.map((ev, idx) => (
+          <CompactEventRow key={ev.id} event={ev} isFirst={idx === 0} />
+        ))}
+      </div>
+    )
+  }
 
   return (
     <div ref={isToday ? scrollRef : undefined} style={{ padding: "10px 20px 6px", opacity: isPast ? 0.55 : 1 }}>
@@ -200,11 +245,73 @@ function DayGroup({
   )
 }
 
+// ─── Floating booking ────────────────────────────────────────────────────────
+
+const PHONE = "+39 393 2320918"
+
+function FloatingBooking() {
+  const [open, setOpen] = useState(false)
+  const phoneHref = `tel:${PHONE.replace(/\s/g, "")}`
+  const waHref = `https://wa.me/${PHONE.replace(/[\s+]/g, "")}`
+
+  return (
+    <>
+      {/* Invisible backdrop to close on outside tap */}
+      {open && (
+        <div
+          onClick={() => setOpen(false)}
+          style={{ position: "fixed", inset: 0, zIndex: 40 }}
+        />
+      )}
+
+      <div style={{ position: "fixed", bottom: 24, right: 20, zIndex: 50, display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 10 }}>
+        {/* Action items */}
+        {open && (
+          <>
+            <a
+              href={phoneHref}
+              onClick={() => setOpen(false)}
+              style={{ display: "inline-flex", alignItems: "center", gap: 10, background: "#161616", border: "1px solid #2a2a2a", borderRadius: 10, padding: "11px 18px", color: "#fff", textDecoration: "none", fontFamily: FA, fontWeight: 700, fontSize: 13, letterSpacing: "0.04em", boxShadow: "0 4px 24px rgba(0,0,0,0.6)", whiteSpace: "nowrap" }}
+            >
+              <Phone size={16} />
+              Chiama
+            </a>
+            <a
+              href={waHref}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => setOpen(false)}
+              style={{ display: "inline-flex", alignItems: "center", gap: 10, background: "#161616", border: "1px solid #2a2a2a", borderRadius: 10, padding: "11px 18px", color: "#25D366", textDecoration: "none", fontFamily: FA, fontWeight: 700, fontSize: 13, letterSpacing: "0.04em", boxShadow: "0 4px 24px rgba(0,0,0,0.6)", whiteSpace: "nowrap" }}
+            >
+              <MessageCircle size={16} />
+              WhatsApp
+            </a>
+          </>
+        )}
+
+        {/* FAB */}
+        <button
+          onClick={() => setOpen(o => !o)}
+          aria-label={open ? "Chiudi" : "Prenota un tavolo"}
+          style={{ width: 52, height: 52, borderRadius: "50%", background: "#00e0c2", color: "#061513", border: "none", cursor: "pointer", display: "grid", placeItems: "center", boxShadow: "0 0 24px rgba(0,224,194,0.35)", transition: "transform 0.15s", flexShrink: 0 }}
+        >
+          {open ? <X size={22} /> : <Phone size={22} />}
+        </button>
+      </div>
+    </>
+  )
+}
+
 // ─── Page ────────────────────────────────────────────────────────────────────
 
 export default function CalendarioPage() {
   const [filter, setFilter] = useState<FilterId>("all")
   const today = useMemo(getTodayStr, [])
+  const yesterday = useMemo(() => {
+    const d = new Date()
+    d.setDate(d.getDate() - 1)
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`
+  }, [])
   const scrollRef = useRef<HTMLDivElement>(null)
 
   // Scroll to today on mount
@@ -213,17 +320,18 @@ export default function CalendarioPage() {
     return () => clearTimeout(t)
   }, [])
 
-  // Group all events by date, sorted chronologically
+  // Group events by date: solo ieri + oggi + futuro
   const grouped = useMemo(() => {
     const map = new Map<string, Ev[]>()
     for (const ev of CALENDAR_EVENTS) {
+      if (ev.date < yesterday) continue
       if (!map.has(ev.date)) map.set(ev.date, [])
       map.get(ev.date)!.push(ev)
     }
     return Array.from(map.entries())
       .sort(([a], [b]) => a.localeCompare(b))
       .map(([date, evs]) => ({ date, events: [...evs].sort((a, b) => a.time.localeCompare(b.time)) }))
-  }, [])
+  }, [yesterday])
 
   // Count events for the current ISO week (for header meta)
   const weekCount = useMemo(() => {
@@ -334,8 +442,12 @@ export default function CalendarioPage() {
           filter={filter}
           today={today}
           scrollRef={date === today ? scrollRef : undefined}
+          compact={date === yesterday}
         />
       ))}
+
+      {/* ── Floating booking ── */}
+      <FloatingBooking />
 
       {/* ── Footer ── */}
       <div style={{ padding: "22px 20px 36px", textAlign: "center", fontFamily: FM, fontSize: 9.5, letterSpacing: "0.18em", color: "#444", textTransform: "uppercase" }}>
