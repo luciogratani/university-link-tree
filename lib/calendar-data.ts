@@ -20,42 +20,49 @@ export const SPORT_CATEGORIES: { id: FilterCategoryId; label: string; emoji: str
 ]
 
 export const CALENDAR_EVENTS: SportEvent[] = [
-  // ── 2026-05-14 ──
-  { id: "e1", date: "2026-05-14", time: "21:00", title: "Real Madrid – Arsenal", category: "calcio", competition: "Champions League – Semifinale", channel: "Sky Sport" },
+  // ── 2026-04-28 ──
+  { id: "e1", date: "2026-04-28", time: "21:00", title: "PSG – Bayern Monaco", category: "calcio", competition: "Champions League – Semifinale Andata", channel: "Sky Sport" },
+
+  // ── 2026-04-29 ──
+  { id: "e2", date: "2026-04-29", time: "21:00", title: "Atletico Madrid – Arsenal", category: "calcio", competition: "Champions League – Semifinale Andata", channel: "Sky Sport" },
+
+  // ── 2026-05-05 ──
+  { id: "e3", date: "2026-05-05", time: "21:00", title: "Arsenal – Atletico Madrid", category: "calcio", competition: "Champions League – Semifinale Ritorno", channel: "Sky Sport" },
+
+  // ── 2026-05-06 ──
+  { id: "e4", date: "2026-05-06", time: "21:00", title: "Bayern Monaco – PSG", category: "calcio", competition: "Champions League – Semifinale Ritorno", channel: "Sky Sport" },
 
   // ── 2026-05-17 ──
-  { id: "e2", date: "2026-05-17", time: "15:00", title: "Milan – Lazio", category: "calcio", competition: "Serie A – 36ª Giornata", channel: "DAZN" },
-  { id: "e3", date: "2026-05-17", time: "18:00", title: "Juventus – Roma", category: "calcio", competition: "Serie A – 36ª Giornata", channel: "DAZN" },
-  { id: "e4", date: "2026-05-17", time: "20:45", title: "Inter – Napoli", category: "calcio", competition: "Serie A – 36ª Giornata", channel: "DAZN" },
-
-  // ── 2026-05-20 ──
-  { id: "e5", date: "2026-05-20", time: "21:00", title: "PSG – Manchester City", category: "calcio", competition: "Champions League – Semifinale Ritorno", channel: "Sky Sport" },
+  { id: "e5", date: "2026-05-17", time: "12:30", title: "Roma – Lazio", category: "calcio", competition: "Serie A – 37ª Giornata", channel: "DAZN" },
+  { id: "e6", date: "2026-05-17", time: "12:30", title: "Juventus – Fiorentina", category: "calcio", competition: "Serie A – 37ª Giornata", channel: "DAZN" },
+  { id: "e7", date: "2026-05-17", time: "15:00", title: "Inter – Verona", category: "calcio", competition: "Serie A – 37ª Giornata", channel: "DAZN" },
 
   // ── 2026-05-21 ──
-  { id: "e6",  date: "2026-05-21", time: "11:00", title: "Roland Garros – 1° Turno", category: "tennis", competition: "Roland Garros 2026", channel: "Eurosport" },
-  { id: "e7",  date: "2026-05-21", time: "21:00", title: "Real Madrid – Arsenal", category: "calcio", competition: "Champions League – Semifinale Ritorno", channel: "Sky Sport" },
+  { id: "e8",  date: "2026-05-21", time: "11:00", title: "Roland Garros – 1° Turno", category: "tennis", competition: "Roland Garros 2026", channel: "Eurosport" },
 
   // ── 2026-05-22 ──
-  { id: "e8", date: "2026-05-22", time: "11:00", title: "Roland Garros – 1° Turno", category: "tennis", competition: "Roland Garros 2026", channel: "Eurosport" },
+  { id: "e9",  date: "2026-05-22", time: "11:00", title: "Roland Garros – 1° Turno", category: "tennis", competition: "Roland Garros 2026", channel: "Eurosport" },
+  { id: "e10", date: "2026-05-22", time: "20:45", title: "Fiorentina – Atalanta", category: "calcio", competition: "Serie A – 38ª Giornata", channel: "DAZN" },
 
   // ── 2026-05-23 ──
-  { id: "e9",  date: "2026-05-23", time: "11:00", title: "Roland Garros – 2° Turno", category: "tennis", competition: "Roland Garros 2026", channel: "Eurosport" },
-  { id: "e10", date: "2026-05-23", time: "15:00", title: "Atalanta – Fiorentina", category: "calcio", competition: "Serie A – 37ª Giornata", channel: "DAZN" },
+  { id: "e11", date: "2026-05-23", time: "11:00", title: "Roland Garros – 2° Turno", category: "tennis", competition: "Roland Garros 2026", channel: "Eurosport" },
+  { id: "e12", date: "2026-05-23", time: "18:00", title: "Bologna – Inter", category: "calcio", competition: "Serie A – 38ª Giornata", channel: "DAZN" },
+  { id: "e13", date: "2026-05-23", time: "20:45", title: "Lazio – Pisa", category: "calcio", competition: "Serie A – 38ª Giornata", channel: "DAZN" },
 
   // ── 2026-05-24 ──
-  { id: "e11", date: "2026-05-24", time: "11:00", title: "Roland Garros – 2° Turno", category: "tennis", competition: "Roland Garros 2026", channel: "Eurosport" },
-  { id: "e12", date: "2026-05-24", time: "15:00", title: "Napoli – Inter", category: "calcio", competition: "Serie A – 37ª Giornata", channel: "DAZN" },
-  { id: "e13", date: "2026-05-24", time: "18:00", title: "Juventus – Milan", category: "calcio", competition: "Serie A – 37ª Giornata", channel: "DAZN" },
+  { id: "e14", date: "2026-05-24", time: "11:00", title: "Roland Garros – 2° Turno", category: "tennis", competition: "Roland Garros 2026", channel: "Eurosport" },
+  { id: "e15", date: "2026-05-24", time: "18:00", title: "Napoli – Udinese", category: "calcio", competition: "Serie A – 38ª Giornata", channel: "DAZN" },
+  { id: "e16", date: "2026-05-24", time: "20:45", title: "Torino – Juventus", category: "calcio", competition: "Serie A – 38ª Giornata", channel: "DAZN" },
+  { id: "e16b", date: "2026-05-24", time: "20:45", title: "Milan – Cagliari", category: "calcio", competition: "Serie A – 38ª Giornata", channel: "DAZN" },
+  { id: "e16c", date: "2026-05-24", time: "20:45", title: "Verona – Roma", category: "calcio", competition: "Serie A – 38ª Giornata", channel: "DAZN" },
 
   // ── 2026-05-25 ──
-  { id: "e14", date: "2026-05-25", time: "11:00", title: "Roland Garros – 3° Turno", category: "tennis", competition: "Roland Garros 2026", channel: "Eurosport" },
-  { id: "e15", date: "2026-05-25", time: "15:00", title: "Roland Garros – 3° Turno", category: "tennis", competition: "Roland Garros 2026", channel: "Eurosport" },
-  { id: "e16", date: "2026-05-25", time: "20:45", title: "Lazio – Roma", category: "calcio", competition: "Serie A – 38ª Giornata", channel: "DAZN" },
+  { id: "e17", date: "2026-05-25", time: "11:00", title: "Roland Garros – 3° Turno", category: "tennis", competition: "Roland Garros 2026", channel: "Eurosport" },
+  { id: "e18", date: "2026-05-25", time: "15:00", title: "Roland Garros – 3° Turno", category: "tennis", competition: "Roland Garros 2026", channel: "Eurosport" },
 
   // ── 2026-05-26 ──
-  { id: "e17", date: "2026-05-26", time: "11:00", title: "Roland Garros – 3° Turno", category: "tennis", competition: "Roland Garros 2026", channel: "Eurosport" },
-  { id: "e18", date: "2026-05-26", time: "15:00", title: "Roland Garros – 3° Turno", category: "tennis", competition: "Roland Garros 2026", channel: "Eurosport" },
-  { id: "e19", date: "2026-05-26", time: "20:45", title: "Inter – Milan", category: "calcio", competition: "Serie A – 38ª Giornata", channel: "DAZN" },
+  { id: "e19",  date: "2026-05-26", time: "11:00", title: "Roland Garros – 3° Turno", category: "tennis", competition: "Roland Garros 2026", channel: "Eurosport" },
+  { id: "e19b", date: "2026-05-26", time: "15:00", title: "Roland Garros – 3° Turno", category: "tennis", competition: "Roland Garros 2026", channel: "Eurosport" },
 
   // ── 2026-05-27 ──
   { id: "e20", date: "2026-05-27", time: "11:00", title: "Roland Garros – Ottavi", category: "tennis", competition: "Roland Garros 2026", channel: "Eurosport" },
@@ -66,10 +73,12 @@ export const CALENDAR_EVENTS: SportEvent[] = [
   // ── 2026-05-29 ──
   { id: "e22", date: "2026-05-29", time: "11:00", title: "Roland Garros – Ottavi", category: "tennis", competition: "Roland Garros 2026", channel: "Eurosport" },
 
+  // ── 2026-05-30 ──
+  { id: "e25", date: "2026-05-30", time: "18:00", title: "PSG – Arsenal", category: "calcio", competition: "Champions League – Finale", channel: "Sky Sport / TV8" },
+
   // ── 2026-05-31 ──
   { id: "e23", date: "2026-05-31", time: "14:00", title: "GP d'Italia – Gara", category: "motogp", competition: "MotoGP 2026", channel: "Sky e TV8" },
   { id: "e24", date: "2026-05-31", time: "14:00", title: "Roland Garros – Quarti", category: "tennis", competition: "Roland Garros 2026", channel: "Eurosport" },
-  { id: "e25", date: "2026-05-31", time: "21:00", title: "Finale Champions League", category: "calcio", competition: "UEFA Champions League", channel: "Sky Sport / TV8" },
 
   // ── 2026-06-01 ──
   { id: "e26", date: "2026-06-01", time: "14:00", title: "Roland Garros – Quarti", category: "tennis", competition: "Roland Garros 2026", channel: "Eurosport" },
