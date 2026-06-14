@@ -32,6 +32,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { Input } from "@/components/ui/input"
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
 import { MENU_FOOTER_TEXT, MENU_NOTICES, MENU_SECTIONS, type MenuSectionNotice } from "@/lib/menu-data"
+import CalendarPopup from "@/components/CalendarPopup"
 
 // ============================================
 // DATI PROFILO – Modifica qui orari, indirizzo e contatti
@@ -534,6 +535,9 @@ export default function ProfilePage() {
 
   return (
     <main className="relative min-h-screen bg-muted/30">
+      {/* Popup orari (a ogni visita) */}
+      <CalendarPopup />
+
       <div className="mx-auto max-w-md px-4 py-8">
         <ProfileHeader />
 

@@ -4,6 +4,7 @@ import React, { useState, useMemo, useRef, useEffect } from "react"
 import Link from "next/link"
 import { Home, Phone, MessageCircle, X } from "lucide-react"
 import type { SportEvent, SportCategoryId } from "@/lib/calendar-data"
+import CalendarPopup from "@/components/CalendarPopup"
 
 // ─── Sport config ────────────────────────────────────────────────────────────
 
@@ -356,6 +357,9 @@ export default function CalendarioClient({ events }: { events: SportEvent[] }) {
       color: "#fff",
       overflowX: "hidden",
     }}>
+
+      {/* ── Popup di benvenuto (a ogni visita) ── */}
+      <CalendarPopup />
 
       {/* ── Header ── */}
       <div style={{ padding: "14px 20px 6px" }}>
